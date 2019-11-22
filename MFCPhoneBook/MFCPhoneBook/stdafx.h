@@ -20,7 +20,7 @@
 #include <afxext.h>         // MFC 확장입니다.
 
 
-
+#include "CSinglethon.h"
 
 
 #ifndef _AFX_NO_OLE_SUPPORT

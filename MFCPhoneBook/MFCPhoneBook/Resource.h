@@ -16,12 +16,14 @@
 #define IDC_MFCBUTTON1                  1007
 #define IDC_MFCBUTTON2                  1008
 #define IDC_MFCBUTTON5                  1032
-#define IDC_MFCBUTTON6                  1033
+#define IDC_OEPN_CSV_BTN                1033
 #define IDC_MFCBUTTON7                  1035
-#define IDC_LIST5                       1064
+#define IDC_ADD_ELEMENT_BTN             1035
 #define IDC_MFCBUTTON3                  1067
 #define IDC_MFCBUTTON4                  1068
 #define IDC_MFCBUTTON8                  1069
+#define IDC_LIST6                       1069
+#define IDC_SAVE_CSV_BTN                1070
 
 // Next default values for new objects
 // 
@@ -29,7 +31,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        135
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1069
+#define _APS_NEXT_CONTROL_VALUE         1071
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

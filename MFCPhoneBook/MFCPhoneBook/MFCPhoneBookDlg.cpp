@@ -58,13 +58,16 @@ CMFCPhoneBookDlg::CMFCPhoneBookDlg(CWnd* pParent /*=nullptr*/)
 void CMFCPhoneBookDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_LIST6, m_employeeList);
 }
 
 BEGIN_MESSAGE_MAP(CMFCPhoneBookDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_BN_CLICKED(IDC_MFCBUTTON5, &CMFCPhoneBookDlg::OnBnClickedMfcbutton5)
+	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST6, &CMFCPhoneBookDlg::OnLvnItemchangedList6)
+	ON_BN_CLICKED(IDC_SAVE_CSV_BTN, &CMFCPhoneBookDlg::OnBnClickedSaveCsvBtn)
+	ON_BN_CLICKED(IDC_OEPN_CSV_BTN, &CMFCPhoneBookDlg::OnBnClickedOepnCsvBtn)
 END_MESSAGE_MAP()
 
 
@@ -100,6 +103,16 @@ BOOL CMFCPhoneBookDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
+
+	CRect rect;
+	m_employeeList.GetClientRect(&rect);
+	
+	for (const CString& column : m_employeeColumn)
+	{
+		m_employeeList.InsertColumn(0, column, LVCFMT_CENTER, rect.Width()/ (sizeof(m_employeeColumn) / sizeof(*m_employeeColumn)) - 3);
+	}
+
+
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -154,8 +167,48 @@ HCURSOR CMFCPhoneBookDlg::OnQueryDragIcon()
 }
 
 
+void CMFCPhoneBookDlg::csvToListControl(const CString& fileName) {
 
-void CMFCPhoneBookDlg::OnBnClickedMfcbutton5()
+	CFileReadManager::CreateClass();
+	CFileReadManager* fileRead = CFileReadManager::GetMgr();
+
+	vector<vector<CString>> csvVector = fileRead->CsvTo2dVectorCString(fileName);
+
+	for (int i = 0; i < csvVector.size(); i++)
+	{
+		m_employeeList.InsertItem(i, csvVector[i][0]);
+
+		for (int j = 0; j < csvVector[i].size(); j++)
+		{
+			m_employeeList.SetItemText(i, j, csvVector[i][j]);
+		}
+	}
+
+}
+
+
+void CMFCPhoneBookDlg::OnLvnItemchangedList6(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	*pResult = 0;
+}
+
+
+void CMFCPhoneBookDlg::OnBnClickedSaveCsvBtn()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+
+void CMFCPhoneBookDlg::OnBnClickedOepnCsvBtn()
+{
+	const TCHAR szFilter[] = TEXT("CSV Files (*.csv)|*.csv|");
+	CFileDialog dlg(TRUE, NULL, NULL, OFN_HIDEREADONLY + OFN_FILEMUSTEXIST, szFilter, this);
+	if (dlg.DoModal() == IDOK)
+	{
+		CString sFilePath = dlg.GetPathName();
+		csvToListControl(sFilePath);
+	}
+
 }

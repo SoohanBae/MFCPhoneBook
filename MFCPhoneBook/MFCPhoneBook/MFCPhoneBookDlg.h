@@ -3,7 +3,8 @@
 //
 
 #pragma once
-
+#include <iostream>
+#include "CFileReadManager.h"
 
 // CMFCPhoneBookDlg 대화 상자
 class CMFCPhoneBookDlg : public CDialogEx
@@ -32,8 +33,14 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnBnClickedMfcbutton1();
-	afx_msg void OnBnClickedButton3();
-	afx_msg void OnBnClickedMfcbutton5();
-	afx_msg void OnBnClickedMfcbutton6();
+
+	//역순 입력
+	CString m_employeeColumn[5] = { TEXT("부서"), TEXT("직함"), TEXT("휴대전화"), TEXT("이름"), TEXT("번호") };
+	
+	void csvToListControl(const CString& fileName);
+
+	CListCtrl m_employeeList;
+	afx_msg void OnLvnItemchangedList6(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnBnClickedSaveCsvBtn();
+	afx_msg void OnBnClickedOepnCsvBtn();
 };
