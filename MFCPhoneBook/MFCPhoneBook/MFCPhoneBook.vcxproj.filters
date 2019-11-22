@@ -30,10 +30,13 @@
     <ClInclude Include="Resource.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CFileReadManager.h">
+    <ClInclude Include="CSinglethon.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CSinglethon.h">
+    <ClInclude Include="CFileManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="StringConverter.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -47,10 +50,10 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CFileReadManager.cpp">
+    <ClCompile Include="CSinglethon.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CSinglethon.cpp">
+    <ClCompile Include="CFileManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

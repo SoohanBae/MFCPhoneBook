@@ -111,7 +111,7 @@ BOOL CMFCPhoneBookDlg::OnInitDialog()
 	{
 		m_employeeList.InsertColumn(0, column, LVCFMT_CENTER, rect.Width()/ (sizeof(m_employeeColumn) / sizeof(*m_employeeColumn)) - 3);
 	}
-
+	csvToListControl(CString("C:\\Users\\bsh1023\\Desktop\\test.csv"));
 
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
@@ -167,23 +167,46 @@ HCURSOR CMFCPhoneBookDlg::OnQueryDragIcon()
 }
 
 
-void CMFCPhoneBookDlg::csvToListControl(const CString& fileName) {
+void CMFCPhoneBookDlg::csvToListControl(const CString& fileName) 
+{
 
-	CFileReadManager::CreateClass();
-	CFileReadManager* fileRead = CFileReadManager::GetMgr();
+	CFileManager::CreateClass();
+	CFileManager* fileManager = CFileManager::GetMgr();
 
-	vector<vector<CString>> csvVector = fileRead->CsvTo2dVectorCString(fileName);
+	vector<vector<CString>> csvVector = fileManager->CsvTo2dVectorCString(fileName);
 
-	for (int i = 0; i < csvVector.size(); i++)
+	for (size_t i = 0; i < csvVector.size(); i++)
 	{
 		m_employeeList.InsertItem(i, csvVector[i][0]);
 
-		for (int j = 0; j < csvVector[i].size(); j++)
+		for (size_t j = 1; j < csvVector[i].size(); j++)
 		{
 			m_employeeList.SetItemText(i, j, csvVector[i][j]);
 		}
 	}
 
+}
+
+void CMFCPhoneBookDlg::ListControlToCsv(const CString& fileName) 
+{
+	
+	vector<vector<CString>> listControlVector;
+
+	for (int i = 0; i < m_employeeList.GetItemCount(); i++)
+	{
+		vector<CString> row;
+		for (size_t j = 0; j < sizeof(m_employeeColumn) / sizeof(m_employeeColumn[0]); j++)
+		{
+			row.push_back(m_employeeList.GetItemText(i, j));
+		}
+		listControlVector.push_back(row);
+		
+	}
+	CFileManager::CreateClass();
+	CFileManager* fileManager = CFileManager::GetMgr();
+
+	fileManager->TwoDVectorCStringToCsv(listControlVector, fileName);
+	
 }
 
 
@@ -197,14 +220,20 @@ void CMFCPhoneBookDlg::OnLvnItemchangedList6(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CMFCPhoneBookDlg::OnBnClickedSaveCsvBtn()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	const TCHAR szFilter[] = TEXT("All Files (*.*)|*.*|");
+	CFileDialog dlg(FALSE, NULL, NULL, OFN_HIDEREADONLY + OFN_FILEMUSTEXIST, szFilter, this);
+	if (dlg.DoModal() == IDOK)
+	{
+		CString sFilePath = dlg.GetPathName();
+		ListControlToCsv(sFilePath + TEXT(".csv"));
+	}
 }
 
 
 void CMFCPhoneBookDlg::OnBnClickedOepnCsvBtn()
 {
 	const TCHAR szFilter[] = TEXT("CSV Files (*.csv)|*.csv|");
-	CFileDialog dlg(TRUE, NULL, NULL, OFN_HIDEREADONLY + OFN_FILEMUSTEXIST, szFilter, this);
+	CFileDialog dlg(TRUE, TEXT("csv"), TEXT("*.csv"), OFN_HIDEREADONLY + OFN_OVERWRITEPROMPT, szFilter, this);
 	if (dlg.DoModal() == IDOK)
 	{
 		CString sFilePath = dlg.GetPathName();

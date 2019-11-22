@@ -183,16 +183,17 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CFileReadManager.h" />
+    <ClInclude Include="CFileManager.h" />
     <ClInclude Include="CSinglethon.h" />
     <ClInclude Include="MFCPhoneBook.h" />
     <ClInclude Include="MFCPhoneBookDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="StringConverter.hpp" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CFileReadManager.cpp" />
+    <ClCompile Include="CFileManager.cpp" />
     <ClCompile Include="CSinglethon.cpp" />
     <ClCompile Include="MFCPhoneBook.cpp" />
     <ClCompile Include="MFCPhoneBookDlg.cpp" />

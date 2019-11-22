@@ -4,7 +4,7 @@
 
 #pragma once
 #include <iostream>
-#include "CFileReadManager.h"
+#include "CFileManager.h"
 
 // CMFCPhoneBookDlg 대화 상자
 class CMFCPhoneBookDlg : public CDialogEx
@@ -38,6 +38,7 @@ public:
 	CString m_employeeColumn[5] = { TEXT("부서"), TEXT("직함"), TEXT("휴대전화"), TEXT("이름"), TEXT("번호") };
 	
 	void csvToListControl(const CString& fileName);
+	void ListControlToCsv(const CString& fileName);
 
 	CListCtrl m_employeeList;
 	afx_msg void OnLvnItemchangedList6(NMHDR *pNMHDR, LRESULT *pResult);
