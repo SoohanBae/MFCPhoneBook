@@ -58,16 +58,21 @@ CMFCPhoneBookDlg::CMFCPhoneBookDlg(CWnd* pParent /*=nullptr*/)
 void CMFCPhoneBookDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LIST6, m_employeeList);
+	DDX_Control(pDX, IDC_EMPLOYEE_LIST, m_employeeList);
+	DDX_Control(pDX, IDC_SEARCH_EDIT, m_searchEdit);
 }
 
 BEGIN_MESSAGE_MAP(CMFCPhoneBookDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST6, &CMFCPhoneBookDlg::OnLvnItemchangedList6)
 	ON_BN_CLICKED(IDC_SAVE_CSV_BTN, &CMFCPhoneBookDlg::OnBnClickedSaveCsvBtn)
 	ON_BN_CLICKED(IDC_OEPN_CSV_BTN, &CMFCPhoneBookDlg::OnBnClickedOepnCsvBtn)
+	ON_BN_CLICKED(IDC_ADD_ELEMENT_BTN, &CMFCPhoneBookDlg::OnBnClickedAddElementBtn)
+	ON_BN_CLICKED(IDC_SAVE_SEARCH_CSV_BTN, &CMFCPhoneBookDlg::OnBnClickedSaveSearchCsvBtn)
+	ON_NOTIFY(NM_RDBLCLK, IDC_EMPLOYEE_LIST, &CMFCPhoneBookDlg::OnNMRDblclkEmployeeList)
+
+	ON_EN_CHANGE(IDC_SEARCH_EDIT, &CMFCPhoneBookDlg::OnEnChangeSearchEdit)
 END_MESSAGE_MAP()
 
 
@@ -107,6 +112,7 @@ BOOL CMFCPhoneBookDlg::OnInitDialog()
 	CRect rect;
 	m_employeeList.GetClientRect(&rect);
 	
+
 	for (const CString& column : m_employeeColumn)
 	{
 		m_employeeList.InsertColumn(0, column, LVCFMT_CENTER, rect.Width()/ (sizeof(m_employeeColumn) / sizeof(*m_employeeColumn)) - 3);
@@ -170,20 +176,12 @@ HCURSOR CMFCPhoneBookDlg::OnQueryDragIcon()
 void CMFCPhoneBookDlg::csvToListControl(const CString& fileName) 
 {
 
-	CFileManager::CreateClass();
-	CFileManager* fileManager = CFileManager::GetMgr();
+	FileManager::CreateClass();
+	FileManager* fileManager = FileManager::GetMgr();
 
-	vector<vector<CString>> csvVector = fileManager->CsvTo2dVectorCString(fileName);
+	m_employeeOriginal = fileManager->CsvTo2dVectorCString(fileName);
 
-	for (size_t i = 0; i < csvVector.size(); i++)
-	{
-		m_employeeList.InsertItem(i, csvVector[i][0]);
-
-		for (size_t j = 1; j < csvVector[i].size(); j++)
-		{
-			m_employeeList.SetItemText(i, j, csvVector[i][j]);
-		}
-	}
+	RePaint();
 
 }
 
@@ -202,19 +200,82 @@ void CMFCPhoneBookDlg::ListControlToCsv(const CString& fileName)
 		listControlVector.push_back(row);
 		
 	}
-	CFileManager::CreateClass();
-	CFileManager* fileManager = CFileManager::GetMgr();
+	FileManager::CreateClass();
+	FileManager* fileManager = FileManager::GetMgr();
 
 	fileManager->TwoDVectorCStringToCsv(listControlVector, fileName);
 	
 }
 
 
-void CMFCPhoneBookDlg::OnLvnItemchangedList6(NMHDR *pNMHDR, LRESULT *pResult)
+void CMFCPhoneBookDlg::OriginalToCsv(const CString& fileName)
 {
-	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	*pResult = 0;
+
+	FileManager::CreateClass();
+	FileManager* fileManager = FileManager::GetMgr();
+
+	fileManager->TwoDVectorCStringToCsv(m_employeeOriginal, fileName);
+
+}
+
+
+vector<bool> CMFCPhoneBookDlg::GetMatchSearchTextRow()
+{
+	vector<bool> isMatchSearchTextRow(m_employeeOriginal.size());
+
+	for (size_t i = 0; i < m_employeeOriginal.size(); i++)
+	{
+		isMatchSearchTextRow[i] = false;
+
+		for (size_t j = 0; j < m_employeeOriginal[i].size(); j++)
+		{
+			CString itemText = m_employeeOriginal[i][j];
+			CString searchText = {};
+			m_searchEdit.GetWindowTextW(searchText);
+
+			int MatchSearchTextIndex = itemText.Find(searchText);
+			
+			if (MatchSearchTextIndex != -1) {
+				isMatchSearchTextRow[i] = true;
+				break;
+			}
+		}
+	}
+
+	return isMatchSearchTextRow;
+}
+
+
+void CMFCPhoneBookDlg::RePaint()
+{
+	m_employeeList.SetRedraw(false);
+
+	vector<bool> isMatchSearchTextRow = GetMatchSearchTextRow();
+	m_employeeList.DeleteAllItems();
+
+	for (size_t i = 0; i < m_employeeOriginal.size(); i++)
+	{
+		if (!isMatchSearchTextRow[i])
+			continue;
+
+		int PillarIndex = m_employeeList.InsertItem(i,m_employeeOriginal[i][0]);
+
+		for (size_t j = 1; j < m_employeeOriginal[i].size(); j++)
+		{
+			m_employeeList.SetItemText(PillarIndex, j, m_employeeOriginal[i][j]);
+		}
+	}
+
+	m_employeeList.SetRedraw(true);
+
+}
+
+
+
+void CMFCPhoneBookDlg::OnBnClickedAddElementBtn()
+{
+	MFCPhoneBookSubDlg mfcPhoneBookSubDlg;
+	mfcPhoneBookSubDlg.DoModal();
 }
 
 
@@ -224,10 +285,23 @@ void CMFCPhoneBookDlg::OnBnClickedSaveCsvBtn()
 	CFileDialog dlg(FALSE, NULL, NULL, OFN_HIDEREADONLY + OFN_FILEMUSTEXIST, szFilter, this);
 	if (dlg.DoModal() == IDOK)
 	{
-		CString sFilePath = dlg.GetPathName();
-		ListControlToCsv(sFilePath + TEXT(".csv"));
+		CString filePath = dlg.GetPathName();
+		ListControlToCsv(filePath + TEXT(".csv"));
 	}
 }
+
+
+void CMFCPhoneBookDlg::OnBnClickedSaveSearchCsvBtn()
+{
+	const TCHAR szFilter[] = TEXT("All Files (*.*)|*.*|");
+	CFileDialog dlg(FALSE, NULL, NULL, OFN_HIDEREADONLY + OFN_FILEMUSTEXIST, szFilter, this);
+	if (dlg.DoModal() == IDOK)
+	{
+		CString filePath = dlg.GetPathName();
+		OriginalToCsv(filePath + TEXT(".csv"));
+	}
+}
+
 
 
 void CMFCPhoneBookDlg::OnBnClickedOepnCsvBtn()
@@ -236,8 +310,33 @@ void CMFCPhoneBookDlg::OnBnClickedOepnCsvBtn()
 	CFileDialog dlg(TRUE, TEXT("csv"), TEXT("*.csv"), OFN_HIDEREADONLY + OFN_OVERWRITEPROMPT, szFilter, this);
 	if (dlg.DoModal() == IDOK)
 	{
-		CString sFilePath = dlg.GetPathName();
-		csvToListControl(sFilePath);
+		CString filePath = dlg.GetPathName();
+		csvToListControl(filePath);
 	}
 
+}
+
+
+
+void CMFCPhoneBookDlg::OnNMRDblclkEmployeeList(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	*pResult = 0;
+}
+
+
+
+
+
+
+void CMFCPhoneBookDlg::OnEnChangeSearchEdit()
+{
+	// TODO:  RICHEDIT 컨트롤인 경우, 이 컨트롤은
+	// CDialogEx::OnInitDialog() 함수를 재지정 
+	//하고 마스크에 OR 연산하여 설정된 ENM_CHANGE 플래그를 지정하여 CRichEditCtrl().SetEventMask()를 호출하지 않으면
+	// 이 알림 메시지를 보내지 않습니다.
+
+	// TODO:  여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	RePaint();
 }

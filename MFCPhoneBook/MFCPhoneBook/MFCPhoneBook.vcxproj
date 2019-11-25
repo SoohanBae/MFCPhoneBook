@@ -183,20 +183,21 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CFileManager.h" />
-    <ClInclude Include="CSinglethon.h" />
+    <ClInclude Include="FileManager.h" />
+    <ClInclude Include="Singlethon.h" />
     <ClInclude Include="MFCPhoneBook.h" />
     <ClInclude Include="MFCPhoneBookDlg.h" />
+    <ClInclude Include="MFCPhoneBookSubDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="StringConverter.hpp" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CFileManager.cpp" />
-    <ClCompile Include="CSinglethon.cpp" />
+    <ClCompile Include="FileManager.cpp" />
+    <ClCompile Include="Singlethon.cpp" />
     <ClCompile Include="MFCPhoneBook.cpp" />
     <ClCompile Include="MFCPhoneBookDlg.cpp" />
+    <ClCompile Include="MFCPhoneBookSubDlg.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

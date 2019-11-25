@@ -30,13 +30,13 @@
     <ClInclude Include="Resource.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CSinglethon.h">
+    <ClInclude Include="MFCPhoneBookSubDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CFileManager.h">
+    <ClInclude Include="FileManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="StringConverter.hpp">
+    <ClInclude Include="Singlethon.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -50,10 +50,13 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CSinglethon.cpp">
+    <ClCompile Include="MFCPhoneBookSubDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CFileManager.cpp">
+    <ClCompile Include="FileManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Singlethon.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
