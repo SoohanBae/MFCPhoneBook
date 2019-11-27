@@ -70,9 +70,9 @@ BEGIN_MESSAGE_MAP(CMFCPhoneBookDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_OEPN_CSV_BTN, &CMFCPhoneBookDlg::OnBnClickedOepnCsvBtn)
 	ON_BN_CLICKED(IDC_ADD_ELEMENT_BTN, &CMFCPhoneBookDlg::OnBnClickedAddElementBtn)
 	ON_BN_CLICKED(IDC_SAVE_SEARCH_CSV_BTN, &CMFCPhoneBookDlg::OnBnClickedSaveSearchCsvBtn)
-	ON_NOTIFY(NM_RDBLCLK, IDC_EMPLOYEE_LIST, &CMFCPhoneBookDlg::OnNMRDblclkEmployeeList)
-
+	
 	ON_EN_CHANGE(IDC_SEARCH_EDIT, &CMFCPhoneBookDlg::OnEnChangeSearchEdit)
+	ON_NOTIFY(NM_DBLCLK, IDC_EMPLOYEE_LIST, &CMFCPhoneBookDlg::OnNMDblclkEmployeeList)
 END_MESSAGE_MAP()
 
 
@@ -117,8 +117,7 @@ BOOL CMFCPhoneBookDlg::OnInitDialog()
 	{
 		m_employeeList.InsertColumn(0, column, LVCFMT_CENTER, rect.Width()/ (sizeof(m_employeeColumn) / sizeof(*m_employeeColumn)) - 3);
 	}
-	csvToListControl(CString("C:\\Users\\bsh1023\\Desktop\\test.csv"));
-
+	m_employeeList.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -271,11 +270,13 @@ void CMFCPhoneBookDlg::RePaint()
 }
 
 
-
 void CMFCPhoneBookDlg::OnBnClickedAddElementBtn()
 {
 	MFCPhoneBookSubDlg mfcPhoneBookSubDlg;
+	mfcPhoneBookSubDlg.m_employeeOriginal = &m_employeeOriginal;
+	mfcPhoneBookSubDlg.m_modeNumber = mfcPhoneBookSubDlg.ADD_MODE;
 	mfcPhoneBookSubDlg.DoModal();
+	RePaint();
 }
 
 
@@ -317,19 +318,6 @@ void CMFCPhoneBookDlg::OnBnClickedOepnCsvBtn()
 }
 
 
-
-void CMFCPhoneBookDlg::OnNMRDblclkEmployeeList(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	*pResult = 0;
-}
-
-
-
-
-
-
 void CMFCPhoneBookDlg::OnEnChangeSearchEdit()
 {
 	// TODO:  RICHEDIT 컨트롤인 경우, 이 컨트롤은
@@ -339,4 +327,24 @@ void CMFCPhoneBookDlg::OnEnChangeSearchEdit()
 
 	// TODO:  여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	RePaint();
+}
+
+
+void CMFCPhoneBookDlg::OnNMDblclkEmployeeList(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	*pResult = 0;
+
+	int selectIndex = pNMItemActivate->iItem;
+	int col = pNMItemActivate->iSubItem;
+
+	//초기화 방법 변경
+	MFCPhoneBookSubDlg mfcPhoneBookSubDlg;
+	mfcPhoneBookSubDlg.m_employeeOriginal = &m_employeeOriginal;
+	mfcPhoneBookSubDlg.m_employeeIndex = selectIndex;
+	mfcPhoneBookSubDlg.m_modeNumber = mfcPhoneBookSubDlg.SELECT_MODE;
+
+	mfcPhoneBookSubDlg.DoModal();
+
 }

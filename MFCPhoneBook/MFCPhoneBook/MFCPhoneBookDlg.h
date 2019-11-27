@@ -52,7 +52,8 @@ public:
 	afx_msg void OnBnClickedSaveCsvBtn();
 	afx_msg void OnBnClickedSaveSearchCsvBtn();
 	afx_msg void OnBnClickedOepnCsvBtn();
-	afx_msg void OnNMRDblclkEmployeeList(NMHDR *pNMHDR, LRESULT *pResult);
+
 	
 	afx_msg void OnEnChangeSearchEdit();
+	afx_msg void OnNMDblclkEmployeeList(NMHDR *pNMHDR, LRESULT *pResult);
 };
