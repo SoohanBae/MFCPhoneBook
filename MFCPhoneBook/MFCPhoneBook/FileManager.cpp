@@ -6,7 +6,6 @@ FileManager::FileManager(void)
 
 }
 
-
 FileManager::~FileManager(void)
 {
 
@@ -15,14 +14,12 @@ FileManager::~FileManager(void)
 vector<vector<CString>> FileManager::CsvTo2dVectorCString(const CString & fileName)
 {
 	vector<vector<CString>> csvVector;
-
 	ifstream file(fileName);
 	if (file.fail()) {
 		ASSERT(0);
 	}
 
-	while (file.good()) {
-		
+	while (file.good()) {	
 		vector<CString> row = CsvReadRow(file);
 		csvVector.push_back(row);
 	}
@@ -32,7 +29,6 @@ vector<vector<CString>> FileManager::CsvTo2dVectorCString(const CString & fileNa
 
 vector<CString> FileManager::CsvReadRow(istream &file)
 {
-
 	stringstream ss;
 	bool inquotes = false;
 	vector<CString> row;//relying on RVO
@@ -82,12 +78,11 @@ vector<CString> FileManager::CsvReadRow(istream &file)
 }
 
 
-void FileManager::TwoDVectorCStringToCsv(const vector<vector<CString>>& listControlVector, const CString& fileName) {
-
+void FileManager::TwoDVectorCStringToCsv(const vector<vector<CString>>& listControlVector, const CString& fileName) 
+{
 	std::wofstream fstream_locale_before;
 	std::locale::global(std::locale("Korean"));
 	std::wofstream fstream_locale_after;
-
 	std::wofstream outputFileText(fileName);
 
 	if (!outputFileText.is_open()) {
@@ -105,9 +100,7 @@ void FileManager::TwoDVectorCStringToCsv(const vector<vector<CString>>& listCont
 		}
 		wstring element = listControlVector[i][j].operator LPCWSTR();
 		outputFileText << element << "\n";
-
 	}
-
 }
 
 

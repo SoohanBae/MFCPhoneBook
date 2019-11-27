@@ -34,26 +34,23 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 
-	//역순 입력
-	CString m_employeeColumn[5] = { TEXT("부서"), TEXT("직함"), TEXT("휴대전화"), TEXT("이름"), TEXT("아이디") };
-	
+	//사용자 생성 함수
 	void csvToListControl(const CString& fileName);
 	void ListControlToCsv(const CString& fileName);
 	void OriginalToCsv(const CString& fileName);
 	vector<bool> GetMatchSearchTextRow();
 	void RePaint();
 
-	vector<vector<CString>> m_employeeOriginal = {};
-
-	CListCtrl m_employeeList;
-	CEdit m_searchEdit;
-
+	//이벤트 처리
 	afx_msg void OnBnClickedAddElementBtn();
 	afx_msg void OnBnClickedSaveCsvBtn();
 	afx_msg void OnBnClickedSaveSearchCsvBtn();
 	afx_msg void OnBnClickedOepnCsvBtn();
-
-	
 	afx_msg void OnEnChangeSearchEdit();
 	afx_msg void OnNMDblclkEmployeeList(NMHDR *pNMHDR, LRESULT *pResult);
+
+	CString m_employeeColumn[5] = { TEXT("부서"), TEXT("직함"), TEXT("휴대전화"), TEXT("이름"), TEXT("아이디") };//역순 입력
+	vector<vector<CString>> m_employeeOriginal = {};
+	CListCtrl m_employeeList;
+	CEdit m_searchEdit;
 };

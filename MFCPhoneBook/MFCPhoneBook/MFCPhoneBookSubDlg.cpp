@@ -1,21 +1,14 @@
-﻿// MFCPhoneBookSubDlg.cpp: 구현 파일
-//
-
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "MFCPhoneBook.h"
 #include "MFCPhoneBookSubDlg.h"
 #include "afxdialogex.h"
 #include <fstream>
-
-
-// MFCPhoneBookSubDlg 대화 상자
 
 IMPLEMENT_DYNAMIC(MFCPhoneBookSubDlg, CDialogEx)
 
 MFCPhoneBookSubDlg::MFCPhoneBookSubDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_MFCPHONEBOOK_SUB_DLALOG, pParent)
 {
-
 }
 
 MFCPhoneBookSubDlg::~MFCPhoneBookSubDlg()
@@ -57,17 +50,13 @@ END_MESSAGE_MAP()
 
 void MFCPhoneBookSubDlg::OnBnClickedFileChooseBtn()
 {
-	
 	const TCHAR szFilter[] = TEXT("이미지 파일(*.BMP, *.GIF, *.JPG) | *.BMP;*.GIF;*.JPG;*.bmp;*.jpg;*.gif |");
 	CFileDialog dlg(TRUE, NULL,NULL, OFN_HIDEREADONLY + OFN_OVERWRITEPROMPT, szFilter, this);
 	if (dlg.DoModal() == IDOK)
 	{
-
 		CString filePath = dlg.GetPathName();
-
 		EmployeePicutrePrint(filePath);
 		EmployeePicutreCopyResource(filePath);
-
 	}
 }
 
@@ -75,7 +64,6 @@ void MFCPhoneBookSubDlg::OnBnClickedFileChooseBtn()
 void MFCPhoneBookSubDlg::EmployeePicutrePrint(const CString& filePath) 
 {
 	CClientDC dc(this);
-
 	m_employeeImage.Destroy();
 	HRESULT a = m_employeeImage.Load(filePath);
 	if(a == S_OK)
@@ -84,7 +72,6 @@ void MFCPhoneBookSubDlg::EmployeePicutrePrint(const CString& filePath)
 		m_employeeImage.Load(TEXT("resource\\empty.jpg"));
 		m_employeeImage.Draw(dc, 341, 33, 100, 130);
 	}
-
 }
 
 void MFCPhoneBookSubDlg::EmployeePicutreCopyResource(const CString& inputFilePath) 
@@ -112,7 +99,7 @@ void MFCPhoneBookSubDlg::ShowSelectMode()
 	m_phoneEdit.EnableWindow(false);
 	m_rankEdit.EnableWindow(false);
 	m_DepartmentEdit.EnableWindow(false);
-	
+
 	m_undoBtn.EnableWindow(false);
 	m_fileChooseBtn.ShowWindow(false);
 	m_deleteBtn.ShowWindow(true);
@@ -184,7 +171,6 @@ bool MFCPhoneBookSubDlg::Repaint(const int & modeNumber)
 	Repaint();
 	Invalidate(true);
 	return true;
-
 }
 
 void MFCPhoneBookSubDlg::ShowSelectEmployee()
@@ -195,8 +181,9 @@ void MFCPhoneBookSubDlg::ShowSelectEmployee()
 	if (m_employeeIndex > m_employeeOriginal->size() - 1) {
 		m_employeeIndex = m_employeeOriginal->size() - 1;
 	}
-	//삭제 (추가후 실행취소)시 우선 주변 index로 바뀌게, 아예 없으면 dialog 종료
-	// + 수정
+	if (m_employeeIndex == -1) {
+		return;
+	}
 
 	m_numberEdit.SetWindowTextW((*m_employeeOriginal)[m_employeeIndex][0]);
 	m_nameEdit.SetWindowTextW((*m_employeeOriginal)[m_employeeIndex][1]);
@@ -218,7 +205,6 @@ void MFCPhoneBookSubDlg::ShowSelectEmployee()
 	if (m_employeeIndex == (*m_employeeOriginal).size() - 1) {
 		m_nextBtn.EnableWindow(false);
 	}
-
 }
 
 void MFCPhoneBookSubDlg::OnBnClickedPrevEmployeeBtn()
@@ -283,13 +269,10 @@ void MFCPhoneBookSubDlg::OnBnClickedUndoBtn()
 }
 
 
-
 void MFCPhoneBookSubDlg::AddEmployee()
 {
 	m_employeeTmp = *m_employeeOriginal;
-
 	std::vector<CString> employee = {};
-	
 	CString textArray[5] = {};
 	
 	m_numberEdit.GetWindowTextW(textArray[0]);
@@ -302,11 +285,9 @@ void MFCPhoneBookSubDlg::AddEmployee()
 	{
 		employee.push_back(text);
 	}
-	
 	employee.push_back(m_employeePicturePath);
-	
-	
 	m_employeeOriginal->push_back(employee);
+	
 	m_employeePicturePath = TEXT("");
 	m_employeeIndex = m_employeeOriginal->size() - 1;
 
@@ -318,7 +299,6 @@ void MFCPhoneBookSubDlg::AddEmployee()
 void MFCPhoneBookSubDlg::EditEmployee()
 {
 	m_employeeTmp = *m_employeeOriginal;
-
 	CString textArray[5] = {};
 
 	m_numberEdit.GetWindowTextW(textArray[0]);
@@ -332,8 +312,10 @@ void MFCPhoneBookSubDlg::EditEmployee()
 		(*m_employeeOriginal)[m_employeeIndex][i] = textArray[i];
 	}
 
-	if(m_employeePicturePath!=TEXT(""))
+	if (m_employeePicturePath != TEXT("")) 
+	{
 		(*m_employeeOriginal)[m_employeeIndex][5] = m_employeePicturePath;
+	}
 	
 	m_employeePicturePath = TEXT("");
 
