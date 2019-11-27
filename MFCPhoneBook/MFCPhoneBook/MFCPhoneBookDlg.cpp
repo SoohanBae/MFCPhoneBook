@@ -1,8 +1,4 @@
-﻿
-// MFCPhoneBookDlg.cpp: 구현 파일
-//
-
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "MFCPhoneBook.h"
 #include "MFCPhoneBookDlg.h"
 #include "afxdialogex.h"
@@ -10,9 +6,6 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
-
-// 응용 프로그램 정보에 사용되는 CAboutDlg 대화 상자입니다.
 
 class CAboutDlg : public CDialogEx
 {
@@ -44,11 +37,6 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
 
-
-// CMFCPhoneBookDlg 대화 상자
-
-
-
 CMFCPhoneBookDlg::CMFCPhoneBookDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_MFCPHONEBOOK_DIALOG, pParent)
 {
@@ -70,7 +58,6 @@ BEGIN_MESSAGE_MAP(CMFCPhoneBookDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_OEPN_CSV_BTN, &CMFCPhoneBookDlg::OnBnClickedOepnCsvBtn)
 	ON_BN_CLICKED(IDC_ADD_ELEMENT_BTN, &CMFCPhoneBookDlg::OnBnClickedAddElementBtn)
 	ON_BN_CLICKED(IDC_SAVE_SEARCH_CSV_BTN, &CMFCPhoneBookDlg::OnBnClickedSaveSearchCsvBtn)
-	
 	ON_EN_CHANGE(IDC_SEARCH_EDIT, &CMFCPhoneBookDlg::OnEnChangeSearchEdit)
 	ON_NOTIFY(NM_DBLCLK, IDC_EMPLOYEE_LIST, &CMFCPhoneBookDlg::OnNMDblclkEmployeeList)
 END_MESSAGE_MAP()
@@ -82,9 +69,6 @@ BOOL CMFCPhoneBookDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	// 시스템 메뉴에 "정보..." 메뉴 항목을 추가합니다.
-
-	// IDM_ABOUTBOX는 시스템 명령 범위에 있어야 합니다.
 	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
 	ASSERT(IDM_ABOUTBOX < 0xF000);
 
@@ -102,17 +86,14 @@ BOOL CMFCPhoneBookDlg::OnInitDialog()
 		}
 	}
 
-	// 이 대화 상자의 아이콘을 설정합니다.  응용 프로그램의 주 창이 대화 상자가 아닐 경우에는
-	//  프레임워크가 이 작업을 자동으로 수행합니다.
-	SetIcon(m_hIcon, TRUE);			// 큰 아이콘을 설정합니다.
-	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
-	// TODO: 여기에 추가 초기화 작업을 추가합니다.
+	SetIcon(m_hIcon, TRUE);			
+	SetIcon(m_hIcon, FALSE);		
+
 
 	CRect rect;
 	m_employeeList.GetClientRect(&rect);
 	
-
 	for (const CString& column : m_employeeColumn)
 	{
 		m_employeeList.InsertColumn(0, column, LVCFMT_CENTER, rect.Width()/ (sizeof(m_employeeColumn) / sizeof(*m_employeeColumn)) - 3);
@@ -164,8 +145,7 @@ void CMFCPhoneBookDlg::OnPaint()
 	}
 }
 
-// 사용자가 최소화된 창을 끄는 동안에 커서가 표시되도록 시스템에서
-//  이 함수를 호출합니다.
+
 HCURSOR CMFCPhoneBookDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
@@ -174,19 +154,14 @@ HCURSOR CMFCPhoneBookDlg::OnQueryDragIcon()
 
 void CMFCPhoneBookDlg::csvToListControl(const CString& fileName) 
 {
-
 	FileManager::CreateClass();
 	FileManager* fileManager = FileManager::GetMgr();
-
 	m_employeeOriginal = fileManager->CsvTo2dVectorCString(fileName);
-
 	RePaint();
-
 }
 
 void CMFCPhoneBookDlg::ListControlToCsv(const CString& fileName) 
 {
-	
 	vector<vector<CString>> listControlVector;
 
 	for (int i = 0; i < m_employeeList.GetItemCount(); i++)
@@ -196,25 +171,20 @@ void CMFCPhoneBookDlg::ListControlToCsv(const CString& fileName)
 		{
 			row.push_back(m_employeeList.GetItemText(i, j));
 		}
-		listControlVector.push_back(row);
-		
+		listControlVector.push_back(row);		
 	}
+
 	FileManager::CreateClass();
 	FileManager* fileManager = FileManager::GetMgr();
-
 	fileManager->TwoDVectorCStringToCsv(listControlVector, fileName);
-	
 }
 
 
 void CMFCPhoneBookDlg::OriginalToCsv(const CString& fileName)
 {
-
 	FileManager::CreateClass();
 	FileManager* fileManager = FileManager::GetMgr();
-
 	fileManager->TwoDVectorCStringToCsv(m_employeeOriginal, fileName);
-
 }
 
 
@@ -320,12 +290,6 @@ void CMFCPhoneBookDlg::OnBnClickedOepnCsvBtn()
 
 void CMFCPhoneBookDlg::OnEnChangeSearchEdit()
 {
-	// TODO:  RICHEDIT 컨트롤인 경우, 이 컨트롤은
-	// CDialogEx::OnInitDialog() 함수를 재지정 
-	//하고 마스크에 OR 연산하여 설정된 ENM_CHANGE 플래그를 지정하여 CRichEditCtrl().SetEventMask()를 호출하지 않으면
-	// 이 알림 메시지를 보내지 않습니다.
-
-	// TODO:  여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	RePaint();
 }
 
@@ -333,18 +297,15 @@ void CMFCPhoneBookDlg::OnEnChangeSearchEdit()
 void CMFCPhoneBookDlg::OnNMDblclkEmployeeList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	*pResult = 0;
 
 	int selectIndex = pNMItemActivate->iItem;
 	int col = pNMItemActivate->iSubItem;
 
-	//초기화 방법 변경
+
 	MFCPhoneBookSubDlg mfcPhoneBookSubDlg;
 	mfcPhoneBookSubDlg.m_employeeOriginal = &m_employeeOriginal;
 	mfcPhoneBookSubDlg.m_employeeIndex = selectIndex;
 	mfcPhoneBookSubDlg.m_modeNumber = mfcPhoneBookSubDlg.SELECT_MODE;
-
 	mfcPhoneBookSubDlg.DoModal();
-
 }
