@@ -1,5 +1,4 @@
-﻿  stdafx.cpp
-  MFCPhoneBook.cpp
-  MFCPhoneBookDlg.cpp
-  코드를 생성하고 있습니다...
+﻿  MFCPhoneBookSubDlg.cpp
+c:\midasit_source\mfcphonebook\mfcphonebook\mfcphonebook\mfcphonebooksubdlg.cpp(195): warning C4018: '>': signed 또는 unsigned가 일치하지 않습니다.
+c:\midasit_source\mfcphonebook\mfcphonebook\mfcphonebook\mfcphonebooksubdlg.cpp(235): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
   MFCPhoneBook.vcxproj -> C:\midasit_source\MFCPhoneBook\MFCPhoneBook\Debug\MFCPhoneBook.exe
